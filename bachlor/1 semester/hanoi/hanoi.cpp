@@ -8,6 +8,25 @@ int total_disks;
 vector<int> pegs[3];
 int step = 0;
 
+const string RESET = "\033[0m";
+const string GRAY  = "\033[90m";
+
+// Набор ANSI-цветов для дисков
+const vector<string> DISK_COLORS = {
+    "\033[31m", // Красный
+    "\033[33m", // Жёлтый
+    "\033[32m", // Зелёный
+    "\033[36m", // Циан
+    "\033[34m", // Синий
+    "\033[35m", // Пурпурный
+    "\033[91m", // Светло-красный
+    "\033[92m"  // Светло-зелёный
+};
+
+string get_color(int disk_size) {
+    return DISK_COLORS[(disk_size - 1) % DISK_COLORS.size()];
+}
+
 void print_towers() {
     int max_width = total_disks * 2 - 1;
 
@@ -17,14 +36,16 @@ void print_towers() {
 
             if (disk_size == 0) {
                 int spaces = total_disks - 1;
-                cout << string(spaces, ' ') << "│" << string(spaces, ' ');
+                cout << string(spaces, ' ') 
+                     << GRAY << "│" << RESET 
+                     << string(spaces, ' ');
             } else {
                 int disk_chars = disk_size * 2 - 1;
                 int spaces = (max_width - disk_chars) / 2;
                 
-                cout << string(spaces, ' ');
+                cout << string(spaces, ' ') << get_color(disk_size);
                 for (int i = 0; i < disk_chars; ++i) cout << "█";
-                cout << string(spaces, ' ');
+                cout << RESET << string(spaces, ' ');
             }
             cout << "   ";
         }
@@ -32,7 +53,7 @@ void print_towers() {
     }
 
     for (int p = 0; p < 3; ++p) {
-        cout << string(max_width, '═') << "   ";
+        cout << GRAY << string(max_width, '═') << RESET << "   ";
     }
     cout << "\n";
 
@@ -53,7 +74,8 @@ void hanoi(int n, int from, int to, int aux) {
     pegs[to].push_back(disk);
 
     step++;
-    cout << "Шаг " << step << ": Переместить диск " << disk 
+    cout << "Шаг " << step << ": Переместить диск " 
+         << get_color(disk) << disk << RESET 
          << " со стержня " << (char)('A' + from) 
          << " на " << (char)('A' + to) << "\n\n";
 
@@ -77,3 +99,4 @@ int main() {
 
     return 0;
 }
+
